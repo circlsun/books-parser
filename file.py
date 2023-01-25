@@ -1,7 +1,7 @@
 import os
 from pathvalidate import sanitize_filename
 
-def download_txt(url, filename, folder='books/'):
+def download_txt(url, filename, folder='books'):
     """Функция для скачивания текстовых файлов.
 
     Args:
@@ -12,7 +12,6 @@ def download_txt(url, filename, folder='books/'):
     Returns:
         str: Путь до файла, куда сохранён текст.
     """
-    # TODO: Здесь ваша реализация
     name = f"{sanitize_filename(filename)}"
     return os.path.join(folder, name)
 

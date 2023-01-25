@@ -2,7 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 
 
-url = 'https://tululu.org/b56/'
+url = 'https://tululu.org/b239/'
 response = requests.get(url)
 response.raise_for_status()
 

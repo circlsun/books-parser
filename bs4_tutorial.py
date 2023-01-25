@@ -2,19 +2,17 @@ import requests
 from bs4 import BeautifulSoup
 
 
-url = 'https://tululu.org/b239/'
+url = 'https://tululu.org/b56/'
 response = requests.get(url)
 response.raise_for_status()
 
 soup = BeautifulSoup(response.text, 'lxml')
 
-# title_tag = soup.find('main').find('header').find('h1')
-# title_text = title_tag.text
+title_teg = soup.find('h1').text.split('::')
+title = title_teg[0].strip()
+author = title_teg[1].strip()
+img = soup.find(class_='bookimage').find('a').find('img')['src']
 
-img = soup.find('img', class_='bookimage')['src']
-
-# text = soup.find('p', class_='entry-content')
-
-# print(title_text)
-print(img)
-# print(text)
+print('Автор:', author)
+print('Заголовок:', title)
+print('Обложка:', img)

@@ -14,7 +14,7 @@ title = title_teg[0].strip()
 author = title_teg[1].strip()
 comments = soup.find_all(class_='texts')
 for comment in comments:
-    print('Комменты:', comment.select('span'))
+    print('Комменты:', comment.find(class_='black').text)
 
 img = soup.find(class_='bookimage').find('a').find('img')['src']
 url_img = urljoin('https://tululu.org/', img)

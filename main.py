@@ -1,9 +1,10 @@
 import os
-import sys
-import requests
-from pathvalidate import sanitize_filename
-from urllib.parse import urljoin, urlsplit
 import argparse
+from urllib.parse import urljoin, urlsplit
+
+import requests
+
+from pathvalidate import sanitize_filename
 from bs4 import BeautifulSoup
 
 
@@ -34,6 +35,7 @@ def download_txt(url, filename, folder='books'):
 
 def download_image(url, name, folder='images'):
     """Функция для скачивания картинок"""
+
     response = requests.get(url)
     response.raise_for_status()
 
@@ -45,6 +47,8 @@ def download_image(url, name, folder='images'):
 
 
 def get_filename(response):
+    """Функция для получения имени книги и картинки"""
+
     soup = BeautifulSoup(response.text, 'lxml')
     title_teg = soup.find('h1').text.split('::')
 
@@ -52,7 +56,9 @@ def get_filename(response):
         img = soup.find(class_='bookimage').find('a').find('img')['src']
     else:
         img = 'images/nopic.gif'
-    return title_teg[0].strip(), urljoin('https://tululu.org/', img)
+    title= title_teg[0].strip()
+    img_name = urljoin('https://tululu.org/', img)
+    return title, img_name
 
 
 def check_for_redirect(response):
@@ -61,6 +67,7 @@ def check_for_redirect(response):
 
 
 def parse_book_page(soup):
+    """Функция для получения информации о книге"""
 
     teg = soup.find('h1').text.split('::')
     title = teg[0].strip()

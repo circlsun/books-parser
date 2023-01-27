@@ -22,14 +22,13 @@ def download_txt(url, filename, folder='books'):
 
     response = requests.get(url)
     response.raise_for_status()
+    check_for_redirect(response)
 
     name = f"{sanitize_filename(filename)}"
     path = f'{os.getcwd()}/{folder}/{name}.txt'
-
     with open(path, 'wb') as file:
         file.write(response.content)
 
-    check_for_redirect(response)
     return os.path.join(folder, name)
 
 
@@ -104,7 +103,7 @@ def main():
 
         response = requests.get(title_url)
         response.raise_for_status()
-        # check_for_redirect(response)
+        check_for_redirect(response)
         soup = BeautifulSoup(response.text, 'lxml')
 
         title, image_url = get_filename(response)
@@ -121,7 +120,7 @@ def main():
             print('Комментарии:', book_info['comments'])
             print()
         except requests.exceptions.HTTPError:
-            os.remove(f'{os.getcwd()}/books/{filename}.txt')
+            pass
 
 
 if __name__ == "__main__":

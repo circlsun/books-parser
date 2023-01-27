@@ -42,12 +42,10 @@ def download_image(url, name, folder='images'):
     return os.path.join(folder, name)
 
 
-def get_filename(url):
-    response = requests.get(url)
-    response.raise_for_status()
-
+def get_filename(response):
     soup = BeautifulSoup(response.text, 'lxml')
     title_teg = soup.find('h1').text.split('::')
+
     if response.url != 'https://tululu.org/':
         img = soup.find(class_='bookimage').find('a').find('img')['src']
     else:
@@ -60,21 +58,51 @@ def check_for_redirect(response):
         raise requests.exceptions.HTTPError
 
 
+def parse_book_page(soup):
+
+    teg = soup.find('h1').text.split('::')
+    title = teg[0].strip()
+    author = teg[1].strip()
+
+    comments = soup.find_all(class_='texts')
+    book_comments = [comment.find(class_='black').text for comment in comments]
+
+    genres = soup.find('span', class_='d_book').find_all('a')
+    book_ganre = [genre.text for genre in genres]
+
+    book_info = {
+        'title': title,
+        'author': author,
+        'ganre': book_ganre,
+        'comments': book_comments,
+    }
+    return book_info
+
+
 def main():
     os.makedirs('books', exist_ok=True)
     os.makedirs('images', exist_ok=True)
-    id_start = 300
+    id_start = 3400
     for i in range(id_start, id_start + 10):
         url = f'https://tululu.org/txt.php?id={i}'
         url_title = f'https://tululu.org/b{i}/'
 
-        title, img_url = get_filename(url_title)
-        imgname = urlsplit(img_url).path.split('/')[2]
+        response = requests.get(url_title)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.text, 'lxml')
+
+        title, url_img = get_filename(response)
+        imgname = urlsplit(url_img).path.split('/')[2]
         filename = f"{i}. {title}"
 
         try:
             download_txt(url, filename)
-            download_image(img_url, imgname)
+            download_image(url_img, imgname)
+            print('Заголовок:', parse_book_page(soup)['title'])
+            print('Автор:', parse_book_page(soup)['author'])
+            print('Жанр:', parse_book_page(soup)['ganre'])
+            print('Комментарии:', parse_book_page(soup)['comments'])
+            print()
         except requests.exceptions.HTTPError:
             os.remove(f'{os.getcwd()}/books/{filename}.txt')
 

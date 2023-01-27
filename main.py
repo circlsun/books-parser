@@ -102,11 +102,12 @@ def main():
     end_id = args.end
 
     for book_id in range(start_id, end_id + 1):
-        url = f'https://tululu.org/txt.php?id={book_id}'
+        url_text = f'https://tululu.org/txt.php?id={book_id}'
         url_title = f'https://tululu.org/b{book_id}/'
 
         response = requests.get(url_title)
         response.raise_for_status()
+        # check_for_redirect(response)
         soup = BeautifulSoup(response.text, 'lxml')
 
         title, url_img = get_filename(response)
@@ -114,7 +115,7 @@ def main():
         filename = f"{book_id}. {title}"
 
         try:
-            download_txt(url, filename)
+            download_txt(url_text, filename)
             download_image(url_img, imgname)
             print('Заголовок:', parse_book_page(soup)['title'])
             print('Автор:', parse_book_page(soup)['author'])

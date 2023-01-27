@@ -76,12 +76,12 @@ def parse_book_page(soup):
     book_comments = [comment.find(class_='black').text for comment in comments]
 
     genres = soup.find('span', class_='d_book').find_all('a')
-    book_ganre = [genre.text for genre in genres]
+    book_ganres = [genre.text for genre in genres]
 
     return {
         'title': title.strip(),
         'author': author.strip(),
-        'ganre': book_ganre,
+        'ganres': book_ganres,
         'comments': book_comments,
     }
 
@@ -117,7 +117,7 @@ def main():
             book_info = parse_book_page(soup)
             print('Заголовок:', book_info['title'])
             print('Автор:', book_info['author'])
-            print('Жанр:', book_info['ganre'])
+            print('Жанры:', book_info['ganres'])
             print('Комментарии:', book_info['comments'])
             print()
         except requests.exceptions.HTTPError:

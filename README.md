@@ -1,6 +1,6 @@
 # Parser of books from tululu.org
 
-App for parsing info and downloading books and their covers from of tululu.org.
+App for parsing info and downloading books and their covers from of [Tululu](https://tululu.org/).
 
 ### How to install
 

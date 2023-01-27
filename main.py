@@ -1,7 +1,9 @@
 import os
+import sys
 import requests
 from pathvalidate import sanitize_filename
 from urllib.parse import urljoin, urlsplit
+import argparse
 from bs4 import BeautifulSoup
 
 
@@ -82,8 +84,16 @@ def parse_book_page(soup):
 def main():
     os.makedirs('books', exist_ok=True)
     os.makedirs('images', exist_ok=True)
-    id_start = 3400
-    for i in range(id_start, id_start + 10):
+
+    parser = argparse.ArgumentParser(description='Save books from tululu.org')
+    parser.add_argument('start', help='Starting book', type=int, default=1)
+    parser.add_argument('end', help='Ending book', type=int, default=10)
+    args = parser.parse_args()
+
+    start_id = args.start
+    end_id = args.end
+
+    for i in range(start_id, end_id + 1):
         url = f'https://tululu.org/txt.php?id={i}'
         url_title = f'https://tululu.org/b{i}/'
 

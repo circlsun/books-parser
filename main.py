@@ -70,9 +70,7 @@ def check_for_redirect(response):
 def parse_book_page(soup):
     """Функция для получения информации о книге"""
 
-    teg = soup.find('h1').text.split('::')
-    title = teg[0].strip()
-    author = teg[1].strip()
+    title, author = soup.find('h1').text.split('::')
 
     comments = soup.find_all(class_='texts')
     book_comments = [comment.find(class_='black').text for comment in comments]
@@ -81,8 +79,8 @@ def parse_book_page(soup):
     book_ganre = [genre.text for genre in genres]
 
     book_info = {
-        'title': title,
-        'author': author,
+        'title': title.strip(),
+        'author': author.strip(),
         'ganre': book_ganre,
         'comments': book_comments,
     }

@@ -102,25 +102,26 @@ def main():
     end_id = args.end
 
     for book_id in range(start_id, end_id + 1):
-        url_text = f'https://tululu.org/txt.php?id={book_id}'
-        url_title = f'https://tululu.org/b{book_id}/'
+        text_url = f'https://tululu.org/txt.php?id={book_id}'
+        title_url = f'https://tululu.org/b{book_id}/'
 
-        response = requests.get(url_title)
+        response = requests.get(title_url)
         response.raise_for_status()
         # check_for_redirect(response)
         soup = BeautifulSoup(response.text, 'lxml')
 
-        title, url_img = get_filename(response)
-        imgname = urlsplit(url_img).path.split('/')[2]
+        title, image_url = get_filename(response)
+        imgname = urlsplit(image_url).path.split('/')[2]
         filename = f"{book_id}. {title}"
 
         try:
-            download_txt(url_text, filename)
-            download_image(url_img, imgname)
-            print('Заголовок:', parse_book_page(soup)['title'])
-            print('Автор:', parse_book_page(soup)['author'])
-            print('Жанр:', parse_book_page(soup)['ganre'])
-            print('Комментарии:', parse_book_page(soup)['comments'])
+            download_txt(text_url, filename)
+            download_image(image_url, imgname)
+            book_info = parse_book_page(soup)
+            print('Заголовок:', book_info['title'])
+            print('Автор:', book_info['author'])
+            print('Жанр:', book_info['ganre'])
+            print('Комментарии:', book_info['comments'])
             print()
         except requests.exceptions.HTTPError:
             os.remove(f'{os.getcwd()}/books/{filename}.txt')

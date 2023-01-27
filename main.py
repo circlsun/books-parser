@@ -78,13 +78,12 @@ def parse_book_page(soup):
     genres = soup.find('span', class_='d_book').find_all('a')
     book_ganre = [genre.text for genre in genres]
 
-    book_info = {
+    return {
         'title': title.strip(),
         'author': author.strip(),
         'ganre': book_ganre,
         'comments': book_comments,
     }
-    return book_info
 
 
 def main():

@@ -101,9 +101,9 @@ def main():
     start_id = args.start
     end_id = args.end
 
-    for i in range(start_id, end_id + 1):
-        url = f'https://tululu.org/txt.php?id={i}'
-        url_title = f'https://tululu.org/b{i}/'
+    for book_id in range(start_id, end_id + 1):
+        url = f'https://tululu.org/txt.php?id={book_id}'
+        url_title = f'https://tululu.org/b{book_id}/'
 
         response = requests.get(url_title)
         response.raise_for_status()
@@ -111,7 +111,7 @@ def main():
 
         title, url_img = get_filename(response)
         imgname = urlsplit(url_img).path.split('/')[2]
-        filename = f"{i}. {title}"
+        filename = f"{book_id}. {title}"
 
         try:
             download_txt(url, filename)

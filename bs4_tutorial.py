@@ -16,9 +16,13 @@ comments = soup.find_all(class_='texts')
 for comment in comments:
     print('Комменты:', comment.find(class_='black').text)
 
+genres = soup.find('span', class_='d_book').find_all('a')
+book_ganre = [genre.text for genre in genres]
+
 img = soup.find(class_='bookimage').find('a').find('img')['src']
 url_img = urljoin('https://tululu.org/', img)
 
 print('Автор:', author)
 print('Заголовок:', title)
 print('Обложка:', url_img)
+print('Жанр:', book_ganre)

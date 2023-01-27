@@ -2,9 +2,13 @@
 
 App for parsing info and downloading books and their covers from of tululu.org.
 
-### Installation
+### How to install
 
-<Расскажите, что для запуска нужен питон, какие библиотеки скачать>
+Python3 should be already installed. 
+Then use `pip` (or `pip3`, if there is a conflict with Python2) to install dependencies:
+```
+pip install -r requirements.txt
+```
 
 ### Usage
 

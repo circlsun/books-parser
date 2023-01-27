@@ -56,7 +56,8 @@ def get_filename(response):
         img = soup.find(class_='bookimage').find('a').find('img')['src']
     else:
         img = 'images/nopic.gif'
-    title= title_teg[0].strip()
+
+    title = title_teg[0].strip()
     img_name = urljoin('https://tululu.org/', img)
     return title, img_name
 

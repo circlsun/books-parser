@@ -12,13 +12,13 @@ Just run the python script `main.py` with the following concole command:
 ```
 python main.py 30 40
 ```
-Where 30 is the starting book, and 40 is the last book to download
+Where argument <30> is the starting book, and <40> is the last book to download.
 
 #### For example:
 ```
 python main.py 50 53
 ```
-Books from 50 to 53 will be downloaded to the 'books' folder and their covers to the 'images' folder.
+Books from <50> to <53> will be downloaded to the 'books' folder and their covers to the 'images' folder.
 And in console the result will be: 
 ```
 Заголовок: Этика перераспределения

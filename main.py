@@ -100,17 +100,17 @@ def main():
             response = requests.get(title_url)
             response.raise_for_status()
             check_for_redirect(response)
-            book_info = parse_book_page(response)
-            imagename = urlsplit(book_info['image_url']).path.split('/')[2]
-            filename = f"{book_id}. {book_info['title']}"
+            annotation = parse_book_page(response)
+            imagename = urlsplit(annotation['image_url']).path.split('/')[2]
+            filename = f"{book_id}. {annotation['title']}"
             download_txt(text_url, filename)
-            download_image(book_info['image_url'], imagename)
+            download_image(annotation['image_url'], imagename)
 
             print(
-                f'Заголовок: {book_info["title"]}\n' \
-                f'Автор: {book_info["author"]}\n' \
-                f'Жанры: {book_info["ganres"]}\n' \
-                f'Комментарии: {book_info["comments"]}\n'
+                f'Заголовок: {annotation["title"]}\n'
+                f'Автор: {annotation["author"]}\n'
+                f'Жанры: {annotation["ganres"]}\n'
+                f'Комментарии: {annotation["comments"]}\n'
             )
         except requests.exceptions.HTTPError:
             pass

@@ -100,11 +100,12 @@ def main():
             response = requests.get(title_url)
             response.raise_for_status()
             check_for_redirect(response)
+
             annotation = parse_book_page(response)
-            imagename = urlsplit(annotation['image_url']).path.split('/')[2]
-            filename = f"{book_id}. {annotation['title']}"
-            download_txt(text_url, filename)
-            download_image(annotation['image_url'], imagename)
+            image_name = urlsplit(annotation['image_url']).path.split('/')[2]
+            book_name = f"{book_id}. {annotation['title']}"
+            download_txt(text_url, book_name)
+            download_image(annotation['image_url'], image_name)
 
             print(
                 f'Заголовок: {annotation["title"]}\n'
@@ -113,11 +114,11 @@ def main():
                 f'Комментарии: {annotation["comments"]}\n'
             )
         except requests.exceptions.HTTPError:
-            pass
+            continue
         except requests.exceptions.ConnectionError:
-            response = requests.get(title_url)
             print('Connection error!')
             time.sleep(5)
+            continue
 
 
 if __name__ == "__main__":

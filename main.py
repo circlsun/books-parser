@@ -39,6 +39,7 @@ def download_image(url, name, folder='images'):
 
     response = requests.get(url)
     response.raise_for_status()
+    check_for_redirect(response)
 
     path = f'{os.getcwd()}/{folder}/{name}'
     with open(path, 'wb') as file:
@@ -53,10 +54,9 @@ def get_filename(response):
     soup = BeautifulSoup(response.text, 'lxml')
     title_teg = soup.find('h1').text.split('::')
 
+    img = 'images/nopic.gif'
     if response.url != 'https://tululu.org/':
         img = soup.find(class_='bookimage').find('a').find('img')['src']
-    else:
-        img = 'images/nopic.gif'
 
     title = title_teg[0].strip()
     img_name = urljoin('https://tululu.org/', img)

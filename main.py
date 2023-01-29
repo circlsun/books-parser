@@ -105,18 +105,19 @@ def main():
             filename = f"{book_id}. {book_info['title']}"
             download_txt(text_url, filename)
             download_image(book_info['image_url'], imagename)
-            print('Заголовок:', book_info['title'])
-            print('Автор:', book_info['author'])
-            print('Жанры:', book_info['ganres'])
-            print('Комментарии:', book_info['comments'])
-            print()
+
+            print(
+                f'Заголовок: {book_info["title"]}\n' \
+                f'Автор: {book_info["author"]}\n' \
+                f'Жанры: {book_info["ganres"]}\n' \
+                f'Комментарии: {book_info["comments"]}\n'
+            )
         except requests.exceptions.HTTPError:
             pass
         except requests.exceptions.ConnectionError:
             response = requests.get(title_url)
             print('Connection error!')
             time.sleep(5)
-
 
 
 if __name__ == "__main__":

@@ -109,12 +109,12 @@ def main():
         soup = BeautifulSoup(response.text, 'lxml')
 
         title, image_url = get_filename(response)
-        imgname = urlsplit(image_url).path.split('/')[2]
+        imagename = urlsplit(image_url).path.split('/')[2]
         filename = f"{book_id}. {title}"
 
         try:
             download_txt(text_url, filename)
-            download_image(image_url, imgname)
+            download_image(image_url, imagename)
             book_info = parse_book_page(soup)
             print('Заголовок:', book_info['title'])
             print('Автор:', book_info['author'])

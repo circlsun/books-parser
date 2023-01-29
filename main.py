@@ -32,7 +32,7 @@ def download_txt(url, filename, folder='books'):
     with open(path, 'wb') as file:
         file.write(response.content)
 
-    return os.path.join(folder, name)
+    return path
 
 
 def download_image(url, name, folder='images'):
@@ -46,7 +46,7 @@ def download_image(url, name, folder='images'):
     with open(path, 'wb') as file:
         file.write(response.content)
 
-    return os.path.join(folder, name)
+    return path
 
 
 def check_for_redirect(response):
@@ -105,7 +105,7 @@ def main():
             image_name = urlsplit(annotation['image_url']).path.split('/')[2]
             book_name = f"{book_id}. {annotation['title']}"
             download_txt(text_url, book_name)
-            download_image(annotation['image_url'], image_name)
+            print(download_image(annotation['image_url'], image_name))
 
             print(
                 f'Заголовок: {annotation["title"]}\n'

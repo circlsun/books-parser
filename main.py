@@ -100,7 +100,7 @@ def main():
     end_id = args.end
 
     for book_id in range(start_id, end_id + 1):
-        text_url = f'https://tululu.org/txt.php?id={book_id}'
+        text_url = 'https://tululu.org/txt.php'
         title_url = f'https://tululu.org/b{book_id}/'
 
         response = requests.get(title_url)

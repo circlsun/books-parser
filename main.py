@@ -48,42 +48,34 @@ def download_image(url, name, folder='images'):
     return os.path.join(folder, name)
 
 
-def get_filename(response):
-    """Функция для получения имени книги и картинки"""
-
-    soup = BeautifulSoup(response.text, 'lxml')
-    title_teg = soup.find('h1').text.split('::')
-
-    img = 'images/nopic.gif'
-    if response.url != 'https://tululu.org/':
-        img = soup.find(class_='bookimage').find('a').find('img')['src']
-
-    title = title_teg[0].strip()
-    img_name = urljoin('https://tululu.org/', img)
-    return title, img_name
-
-
 def check_for_redirect(response):
     if response.url == 'https://tululu.org/':
         raise requests.exceptions.HTTPError
 
 
-def parse_book_page(soup):
+def parse_book_page(response):
     """Функция для получения информации о книге"""
 
+    soup = BeautifulSoup(response.text, 'lxml')
     title, author = soup.find('h1').text.split('::')
+
+    genres = soup.find('span', class_='d_book').find_all('a')
+    book_ganres = [genre.text for genre in genres]
 
     comments = soup.find_all(class_='texts')
     book_comments = [comment.find(class_='black').text for comment in comments]
 
-    genres = soup.find('span', class_='d_book').find_all('a')
-    book_ganres = [genre.text for genre in genres]
+    image = 'images/nopic.gif'
+    if response.url != 'https://tululu.org/':
+        image = soup.find(class_='bookimage').find('a').find('img')['src']
+    image_url = urljoin('https://tululu.org/', image)
 
     return {
         'title': title.strip(),
         'author': author.strip(),
         'ganres': book_ganres,
         'comments': book_comments,
+        'image_url': image_url
     }
 
 
@@ -103,19 +95,15 @@ def main():
         text_url = 'https://tululu.org/txt.php'
         title_url = f'https://tululu.org/b{book_id}/'
 
-        response = requests.get(title_url)
-        response.raise_for_status()
-        check_for_redirect(response)
-        soup = BeautifulSoup(response.text, 'lxml')
-
-        title, image_url = get_filename(response)
-        imagename = urlsplit(image_url).path.split('/')[2]
-        filename = f"{book_id}. {title}"
-
         try:
+            response = requests.get(title_url)
+            response.raise_for_status()
+            check_for_redirect(response)
+            book_info = parse_book_page(response)
+            imagename = urlsplit(book_info['image_url']).path.split('/')[2]
+            filename = f"{book_id}. {book_info['title']}"
             download_txt(text_url, filename)
-            download_image(image_url, imagename)
-            book_info = parse_book_page(soup)
+            download_image(book_info['image_url'], imagename)
             print('Заголовок:', book_info['title'])
             print('Автор:', book_info['author'])
             print('Жанры:', book_info['ganres'])

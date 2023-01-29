@@ -1,4 +1,5 @@
 import os
+import time
 import argparse
 from urllib.parse import urljoin, urlsplit
 
@@ -111,6 +112,11 @@ def main():
             print()
         except requests.exceptions.HTTPError:
             pass
+        except requests.exceptions.ConnectionError:
+            response = requests.get(title_url)
+            print('Connection error!')
+            time.sleep(5)
+
 
 
 if __name__ == "__main__":

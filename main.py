@@ -19,8 +19,10 @@ def download_txt(url, filename, folder='books'):
     Returns:
         str: Путь до файла, куда сохранён текст.
     """
-
-    response = requests.get(url)
+    params = {
+        'id': filename.split('/')[0],
+    }
+    response = requests.get(url, params=params)
     response.raise_for_status()
     check_for_redirect(response)
 

@@ -101,17 +101,19 @@ def main():
             response.raise_for_status()
             check_for_redirect(response)
 
-            annotation = parse_book_page(response)
-            image_name = urlsplit(annotation['image_url']).path.split('/')[2]
-            book_name = f"{book_id}. {annotation['title']}"
+            book_description = parse_book_page(response)
+            image_name = urlsplit(
+                book_description['image_url']
+            ).path.split('/')[2]
+            book_name = f"{book_id}. {book_description['title']}"
+
             download_txt(text_url, book_name)
-            print(download_image(annotation['image_url'], image_name))
+            download_image(book_description['image_url'], image_name)
 
             print(
-                f'Заголовок: {annotation["title"]}\n'
-                f'Автор: {annotation["author"]}\n'
-                f'Жанры: {annotation["ganres"]}\n'
-                f'Комментарии: {annotation["comments"]}\n'
+                f'Заголовок: {book_description["title"]}\n'
+                f'Автор: {book_description["author"]}\n'
+                f'Жанры: {book_description["ganres"]}\n'
             )
         except requests.exceptions.HTTPError:
             continue

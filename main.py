@@ -51,8 +51,8 @@ def download_image(url, name, folder='images'):
 
 
 def check_for_redirect(response):
-    if response.url == 'https://tululu.org/':
-        raise requests.exceptions.HTTPError
+    if response.history:
+        raise requests.HTTPError(response.history)
 
 
 def parse_book_page(response):
@@ -110,15 +110,15 @@ def main():
 
             download_txt(text_url, book_name)
             download_image(book_description['image_url'], image_name)
-            print(textwrap.dedent(
-                f'''Заголовок: {book_description["title"]}
+            print(textwrap.dedent(f'''
+                    Заголовок: {book_description["title"]}
                     Автор: {book_description["author"]}
                     Жанры: {book_description["ganres"]}
-                ''')
-            )
-        except requests.exceptions.HTTPError:
+                '''))
+        except requests.HTTPError as error:
+            print(f'HTTP request error: {error}. Use google.com to translate.')
             continue
-        except requests.exceptions.ConnectionError:
+        except requests.ConnectionError:
             print('Connection error!')
             time.sleep(5)
             continue

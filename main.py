@@ -68,7 +68,8 @@ def parse_book_page(response):
     book_comments = [comment.find(class_='black').text for comment in comments]
 
     image = soup.find(class_='bookimage').find('a').find('img')['src']
-    image_url = urljoin('https://tululu.org/', image)
+    image_url = urljoin(response.url, image)
+    print(image_url)
 
     return {
         'title': title.strip(),

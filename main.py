@@ -1,5 +1,6 @@
 import os
 import time
+import textwrap
 import argparse
 from urllib.parse import urljoin, urlsplit
 
@@ -109,11 +110,11 @@ def main():
 
             download_txt(text_url, book_name)
             download_image(book_description['image_url'], image_name)
-
-            print(
-                f'Заголовок: {book_description["title"]}\n'
-                f'Автор: {book_description["author"]}\n'
-                f'Жанры: {book_description["ganres"]}\n'
+            print(textwrap.dedent(
+                f'''Заголовок: {book_description["title"]}
+                    Автор: {book_description["author"]}
+                    Жанры: {book_description["ganres"]}
+                ''')
             )
         except requests.exceptions.HTTPError:
             continue

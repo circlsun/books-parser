@@ -69,7 +69,6 @@ def parse_book_page(response):
 
     image = soup.find(class_='bookimage').find('a').find('img')['src']
     image_url = urljoin(response.url, image)
-    print(image_url)
 
     return {
         'title': title.strip(),

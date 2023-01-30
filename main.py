@@ -67,9 +67,7 @@ def parse_book_page(response):
     comments = soup.find_all(class_='texts')
     book_comments = [comment.find(class_='black').text for comment in comments]
 
-    image = 'images/nopic.gif'
-    if response.url != 'https://tululu.org/':
-        image = soup.find(class_='bookimage').find('a').find('img')['src']
+    image = soup.find(class_='bookimage').find('a').find('img')['src']
     image_url = urljoin('https://tululu.org/', image)
 
     return {

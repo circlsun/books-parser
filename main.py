@@ -121,7 +121,8 @@ def main():
                 '''))
         except requests.HTTPError as error:
             print(f'HTTP request error: {error}. Use google.com to translate.')
-            logger.info(f'HTTP request error: {error}. Book {book_id} is not download!')
+            logger.info(f'HTTP request error: {error}. \
+                Book {book_id} is not download!')
             continue
         except requests.ConnectionError:
             print('Connection error!')

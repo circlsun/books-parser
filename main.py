@@ -2,6 +2,7 @@ import os
 import time
 import textwrap
 import argparse
+import logging
 from urllib.parse import urljoin, urlsplit
 
 import requests
@@ -69,7 +70,6 @@ def parse_book_page(response):
 
     image = soup.find(class_='bookimage').find('a').find('img')['src']
     image_url = urljoin(response.url, image)
-    print(image_url)
 
     return {
         'title': title.strip(),
@@ -81,6 +81,11 @@ def parse_book_page(response):
 
 
 def main():
+    logger = logging.getLogger('ParserLog')
+    logging.basicConfig(filename='app.log', filemode='w')
+    logging.info('This will get logged to a file')
+
+    logger.setLevel(level=logging.INFO)
     os.makedirs('books', exist_ok=True)
     os.makedirs('images', exist_ok=True)
 
@@ -116,6 +121,7 @@ def main():
                 '''))
         except requests.HTTPError as error:
             print(f'HTTP request error: {error}. Use google.com to translate.')
+            logger.info(f'HTTP request error: {error}. Book {book_id} is not download!')
             continue
         except requests.ConnectionError:
             print('Connection error!')

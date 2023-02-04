@@ -101,7 +101,7 @@ def main():
 
     for title_url in books_url:
 
-        book_id = title_url.strip('/')[3]
+        book_id = title_url.split('/')[3][1:]
 
         try:
             response = requests.get(title_url)

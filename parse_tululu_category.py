@@ -1,6 +1,6 @@
 import os
 import time
-import textwrap
+import json
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlsplit
@@ -98,27 +98,32 @@ def main():
 
     text_url = 'https://tululu.org/txt.php'
     books_url = get_url()
-
+    books_description = []
     for title_url in books_url:
 
         book_id = title_url.split('/')[3][1:]
-
+        book_description = {}
         try:
             response = requests.get(title_url)
             response.raise_for_status()
             check_for_redirect(response)
 
             book_description = parse_book_page(response)
-            image_name = urlsplit(book_description['image_url']).path.split('/')[2]
+            image_name = urlsplit(book_description['image_url'])\
+                .path.split('/')[2]
             book_name = f"{book_id}. {book_description['title']}"
-            print(book_name)
-            download_txt(text_url, book_name)
+
+            book_path = download_txt(text_url, book_name)
             download_image(book_description['image_url'], image_name)
-            print(textwrap.dedent(f'''
-                    Заголовок: {book_description["title"]}
-                    Автор: {book_description["author"]}
-                    Жанры: {book_description["ganres"]}
-                '''))
+            book_description = {
+                    "title": book_description["title"],
+                    "author": book_description["author"],
+                    "img_src": book_description["image_url"],
+                    "book_path": book_path,
+                    "comments": book_description["comments"],
+                    "genres": book_description["ganres"]
+            }
+
         except requests.HTTPError as error:
             print(f'HTTP request error: {error}. Use google.com to translate.')
             continue
@@ -126,6 +131,12 @@ def main():
             print('Connection error!')
             time.sleep(5)
             continue
+
+        books_description.append(book_description)
+        book_json = json.dumps(books_description, ensure_ascii=False)
+
+        with open("books_description.json", "w", encoding='utf8') as my_file:
+            my_file.write(book_json)
 
 
 if __name__ == "__main__":

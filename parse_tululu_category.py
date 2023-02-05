@@ -46,12 +46,12 @@ def download_txt(url, filename, folder='books'):
     response.raise_for_status()
     check_for_redirect(response)
 
-    name = f"{sanitize_filename(filename)}"
+    name = f'{sanitize_filename(filename)}'
     path = f'{os.getcwd()}/{folder}/{name}.txt'
     with open(path, 'wb') as file:
         file.write(response.content)
 
-    return path
+    return f'{folder}/{name}.txt'
 
 
 def download_image(url, name, folder='images'):
@@ -65,7 +65,7 @@ def download_image(url, name, folder='images'):
     with open(path, 'wb') as file:
         file.write(response.content)
 
-    return path
+    return f'{folder}/{name}'
 
 
 def parse_book_page(response):
@@ -111,15 +111,15 @@ def main():
             book_description = parse_book_page(response)
             image_name = urlsplit(book_description['image_url'])\
                 .path.split('/')[2]
-            book_name = f"{book_id}. {book_description['title']}"
+            book_name = f"{book_id}.{book_description['title']}"
 
-            book_path = download_txt(text_url, book_name)
-            download_image(book_description['image_url'], image_name)
+            text_path = download_txt(text_url, book_name)
+            image_path = download_image(book_description['image_url'], image_name)
             book_description = {
                     "title": book_description["title"],
                     "author": book_description["author"],
-                    "img_src": book_description["image_url"],
-                    "book_path": book_path,
+                    "img_src": image_path,
+                    "book_path": text_path,
                     "comments": book_description["comments"],
                     "genres": book_description["ganres"]
             }

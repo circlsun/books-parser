@@ -21,10 +21,10 @@ def get_url():
         response.raise_for_status()
 
         soup = BeautifulSoup(response.text, 'lxml')
-        books_scifi = soup.find_all(class_='bookimage')
+        books_scifi = soup.select('.bookimage')
 
         for book_scifi in books_scifi:
-            links.append(urljoin(response.url, book_scifi.find('a')['href']))
+            links.append(urljoin(response.url, book_scifi.select_one('a')['href']))
     return links
 
 
@@ -72,15 +72,15 @@ def parse_book_page(response):
     """Функция для получения информации о книге"""
 
     soup = BeautifulSoup(response.text, 'lxml')
-    title, author = soup.find('h1').text.split('::')
+    title, author = soup.select_one('h1').text.split('::')
 
-    genres = soup.find('span', class_='d_book').find_all('a')
+    genres = soup.select('.d_book > a')
     book_ganres = [genre.text for genre in genres]
 
-    comments = soup.find_all(class_='texts')
-    book_comments = [comment.find(class_='black').text for comment in comments]
+    comments = soup.select('.texts .black')
+    book_comments = [comment.text for comment in comments]
 
-    image = soup.find(class_='bookimage').find('a').find('img')['src']
+    image = soup.select_one('.bookimage a img')['src']
     image_url = urljoin(response.url, image)
 
     return {

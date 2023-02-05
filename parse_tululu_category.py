@@ -133,7 +133,7 @@ def main():
             continue
 
         books_description.append(book_description)
-        book_json = json.dumps(books_description, ensure_ascii=False)
+        book_json = json.dumps(books_description, ensure_ascii=False, indent=2)
 
         with open("books_description.json", "w", encoding='utf8') as my_file:
             my_file.write(book_json)

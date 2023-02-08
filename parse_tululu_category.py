@@ -2,6 +2,7 @@ import os
 import time
 import json
 import requests
+import argparse
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlsplit
 from pathvalidate import sanitize_filename
@@ -12,10 +13,10 @@ def check_for_redirect(response):
         raise requests.HTTPError(response.history)
 
 
-def get_url():
+def get_url(start_id, end_id):
     links = []
 
-    for page in range(1, 5):
+    for page in range(start_id, end_id):
         scifi_url = f'https://tululu.org/l55/{page}'
         response = requests.get(scifi_url)
         response.raise_for_status()
@@ -24,7 +25,9 @@ def get_url():
         books_scifi = soup.select('.bookimage')
 
         for book_scifi in books_scifi:
-            links.append(urljoin(response.url, book_scifi.select_one('a')['href']))
+            links.append(urljoin(
+                response.url, book_scifi.select_one('a')['href']
+                ))
     return links
 
 
@@ -96,11 +99,21 @@ def main():
     os.makedirs('books', exist_ok=True)
     os.makedirs('images', exist_ok=True)
 
+    parser = argparse.ArgumentParser(description='Save books from tululu.org')
+    parser.add_argument(
+        '--start_page', help='Starting book', type=int, default=1)
+    parser.add_argument(
+        '--end_page', help='Ending book', type=int, default=701)
+    args = parser.parse_args()
+
+    start_id = args.start_page
+    end_id = args.end_page
+
     text_url = 'https://tululu.org/txt.php'
-    books_url = get_url()
+    books_url = get_url(start_id, end_id)
     books_description = []
     for title_url in books_url:
-
+        print(title_url)
         book_id = title_url.split('/')[3][1:]
         book_description = {}
         try:
@@ -114,7 +127,8 @@ def main():
             book_name = f"{book_id}.{book_description['title']}"
 
             text_path = download_txt(text_url, book_name)
-            image_path = download_image(book_description['image_url'], image_name)
+            image_path = download_image(
+                book_description['image_url'], image_name)
             book_description = {
                     "title": book_description["title"],
                     "author": book_description["author"],

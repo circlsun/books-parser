@@ -10,7 +10,7 @@ Then use `pip` (or `pip3`, if there is a conflict with Python2) to install depen
 pip install -r requirements.txt
 ```
 
-### Usage
+### Usage main.py
 
 Just run the python script `main.py` with the following concole command:
 ```
@@ -39,11 +39,23 @@ And in console the result will be:
 Автор: Рудинштейн Марк
 Жанр: ['Деловая литература', 'Прочая компьютерная литература']
 Комментарии: ['Набор общеизвестных фраз и ничего личного, привнесенного автором. Скучно, малоинформативно, не стоит тратить время на книгу тем, кто собирается таким образом искать работу через Интернет.']
+```
+### Usage parse_tululu_category.py
 
-Заголовок: Как подготовить успешный бизнес-план
-Автор: Автор неизвестен
-Жанр: ['Деловая литература']
-Комментарии: []
+Just run the python script `parse_tululu_category.py` with the following concole command:
+```
+python parse_tululu_category.py
+```
+Only the first five pages will be downloaded to the default folder `books` And the `book_description' file.json` to the default folder `json'.(about 100 books).
+
+#### For example:
+```
+python main.py 50 53
+```
+Books from <50> to <53> will be downloaded to the 'books' folder and their covers to the 'images' folder.
+And in console the result will be: 
+```
+
 ```
 
 ### Project Goals

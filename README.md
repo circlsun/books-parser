@@ -77,7 +77,7 @@ The program accepts the following optional arguments:
 
 Example for all arguments:
 ```
-python parse_tululu_category.py --start_page 698 --end_page 700 --skip_imgs --skip_txt --json_path 'jsson'  --dest_folder 'new_books'
+python parse_tululu_category.py --start_page 698 --end_page 700 --skip_imgs --skip_txt --json_path 'books_json'  --dest_folder 'new_books'
 ```
 And in console the result will be:
 ```

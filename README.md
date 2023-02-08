@@ -71,7 +71,7 @@ The program accepts the following optional arguments:
 
 `--skip_txt`: if this flag is present, the texts of books are not downloaded;
 
-`--dest_folder`: after this argument, the destination folder is specified in which the /books and /images subfolders will be created;
+`--dest_folder`: after this argument, the destination folder is specified in which the text of books and images will be created;
 
 `--json_path`: path to ***.json file with results
 

@@ -48,11 +48,6 @@ python parse_tululu_category.py
 ```
 Only the first five sci-fi pages of books will be downloaded to the default folder `books` And the `book_description.json` to the default folder `json` (this is about 95 books).
 
-#### For example:
-```
-python main.py 50 53
-```
-Books from <50> to <53> will be downloaded to the 'books' folder and their covers to the 'images' folder.
 And in console the result will be: 
 ```
 Link of the book: https://tululu.org/b239/

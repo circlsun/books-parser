@@ -96,24 +96,42 @@ def parse_book_page(response):
 
 
 def main():
-    os.makedirs('books', exist_ok=True)
-    os.makedirs('images', exist_ok=True)
-
     parser = argparse.ArgumentParser(description='Save books from tululu.org')
     parser.add_argument(
-        '--start_page', help='Starting book', type=int, default=1)
+        '--start_page', type=int, default=1,
+        help='Starting book')
     parser.add_argument(
-        '--end_page', help='Ending book', type=int, default=701)
-    args = parser.parse_args()
+        '--end_page', type=int, default=701,
+        help='Ending book')
+    parser.add_argument(
+        '--skip_imgs',  action='store_false', default=True,
+        help='Argument for not to download the images')
+    parser.add_argument(
+        '--skip_txt',  action='store_false', default=True,
+        help='Argument for not to download the text')
+    parser.add_argument(
+        '--json_path', default='books',
+        help='Path for <.json> file')
+    parser.add_argument(
+        '--dest_folder', default='json',
+        help='Path for text and images files')
 
+    args = parser.parse_args()
     start_id = args.start_page
     end_id = args.end_page
+    skip_images = args.skip_imgs
+    skip_text = args.skip_txt
+    books_folder = args.dest_folder
+    json_folder = args.json_path
+
+    os.makedirs(books_folder, exist_ok=True)
+    os.makedirs(json_folder, exist_ok=True)
 
     text_url = 'https://tululu.org/txt.php'
     books_url = get_url(start_id, end_id)
     books_description = []
     for title_url in books_url:
-        print(title_url)
+        print(f'Download the book: {title_url}')
         book_id = title_url.split('/')[3][1:]
         book_description = {}
         try:
@@ -124,11 +142,17 @@ def main():
             book_description = parse_book_page(response)
             image_name = urlsplit(book_description['image_url'])\
                 .path.split('/')[2]
-            book_name = f"{book_id}.{book_description['title']}"
+            book_name = f"{book_id}. {book_description['title']}"
 
-            text_path = download_txt(text_url, book_name)
-            image_path = download_image(
-                book_description['image_url'], image_name)
+            if skip_text:
+                text_path = download_txt(text_url, book_name, books_folder)
+            else:
+                text_path = None
+            if skip_images:
+                image_path = download_image(
+                    book_description['image_url'], image_name, books_folder)
+            else:
+                image_path = None
             book_description = {
                     "title": book_description["title"],
                     "author": book_description["author"],
@@ -149,7 +173,9 @@ def main():
         books_description.append(book_description)
         book_json = json.dumps(books_description, ensure_ascii=False, indent=2)
 
-        with open("books_description.json", "w", encoding='utf8') as my_file:
+        with open(
+            f'{json_folder}/{"books_description.json"}', 'w', encoding='utf8'
+        ) as my_file:
             my_file.write(book_json)
 
 

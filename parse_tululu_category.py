@@ -1,6 +1,7 @@
 import os
 import time
 import json
+import textwrap
 import requests
 import argparse
 from bs4 import BeautifulSoup
@@ -101,7 +102,7 @@ def main():
         '--start_page', type=int, default=1,
         help='Starting book')
     parser.add_argument(
-        '--end_page', type=int, default=701,
+        '--end_page', type=int, default=5,
         help='Ending book')
     parser.add_argument(
         '--skip_imgs',  action='store_false', default=True,
@@ -110,10 +111,10 @@ def main():
         '--skip_txt',  action='store_false', default=True,
         help='Argument for not to download the text')
     parser.add_argument(
-        '--json_path', default='books',
+        '--json_path', default='json',
         help='Path for <.json> file')
     parser.add_argument(
-        '--dest_folder', default='json',
+        '--dest_folder', default='books',
         help='Path for text and images files')
 
     args = parser.parse_args()
@@ -131,7 +132,7 @@ def main():
     books_url = get_url(start_id, end_id)
     books_description = []
     for title_url in books_url:
-        print(f'Download the book: {title_url}')
+        print(f'Link of the book: {title_url}')
         book_id = title_url.split('/')[3][1:]
         book_description = {}
         try:
@@ -163,7 +164,10 @@ def main():
             }
 
         except requests.HTTPError as error:
-            print(f'HTTP request error: {error}. Use google.com to translate.')
+            print(textwrap.dedent(f'''
+            The previous book is not available for download.
+            HTTP error: {error}. Use google.com to translate.
+            '''))
             continue
         except requests.ConnectionError:
             print('Connection error!')

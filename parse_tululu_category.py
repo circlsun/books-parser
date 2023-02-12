@@ -134,7 +134,6 @@ def main():
     for title_url in books_url:
         print(f'Link of the book: {title_url}')
         book_id = title_url.split('/')[3][1:]
-        book_description = {}
         try:
             response = requests.get(title_url)
             response.raise_for_status()
@@ -175,12 +174,10 @@ def main():
             continue
 
         books_description.append(book_description)
-        book_json = json.dumps(books_description, ensure_ascii=False, indent=2)
-
         with open(
             f'{json_folder}/{"books_description.json"}', 'w', encoding='utf8'
-        ) as my_file:
-            my_file.write(book_json)
+        ) as json_file:
+            json_file.write(json.dumps(books_description, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":

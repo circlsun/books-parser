@@ -21,6 +21,7 @@ def get_url(start_id, end_id):
         scifi_url = f'https://tululu.org/l55/{page}'
         response = requests.get(scifi_url)
         response.raise_for_status()
+        check_for_redirect(response)
 
         soup = BeautifulSoup(response.text, 'lxml')
         books_scifi = soup.select('.bookimage')

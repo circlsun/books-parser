@@ -79,12 +79,14 @@ def main():
                 .path.split('/')[2]
             book_name = f"{book_id}. {book_description['title']}"
 
-            text_path = None
             if skip_text:
+                text_path = None
+            else:
                 text_path = download_txt(text_url, book_name, books_folder)
 
-            image_path = None
             if skip_images:
+                image_path = None
+            else:
                 image_path = download_image(
                     book_description['image_url'], image_name, books_folder)
 

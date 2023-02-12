@@ -14,7 +14,7 @@ def check_for_redirect(response):
         raise requests.HTTPError(response.history)
 
 
-def get_url(start_id, end_id):
+def get_urls(start_id, end_id):
     links = []
 
     for page in range(start_id, end_id):
@@ -130,9 +130,9 @@ def main():
     os.makedirs(json_folder, exist_ok=True)
 
     text_url = 'https://tululu.org/txt.php'
-    books_url = get_url(start_id, end_id)
+    book_urls = get_urls(start_id, end_id)
     books_description = []
-    for title_url in books_url:
+    for title_url in book_urls:
         print(f'Link of the book: {title_url}')
         book_id = title_url.split('/')[3][1:]
         try:

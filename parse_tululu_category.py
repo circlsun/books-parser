@@ -4,15 +4,11 @@ import json
 import textwrap
 import argparse
 from urllib.parse import urljoin, urlsplit
+
 import requests
 from bs4 import BeautifulSoup
-
-from pathvalidate import sanitize_filename
-
-
-def check_for_redirect(response):
-    if response.history:
-        raise requests.HTTPError(response.history)
+from parse_tululu_all import check_for_redirect, download_txt
+from parse_tululu_all import download_image, parse_book_page
 
 
 def get_urls(start_id, end_id):
@@ -32,70 +28,6 @@ def get_urls(start_id, end_id):
                 response.url, book_scifi.select_one('a')['href']
                 ))
     return links
-
-
-def download_txt(url, filename, folder='books'):
-    """Функция для скачивания текстовых файлов.
-
-    Args:
-        url (str): Cсылка на текст, который хочется скачать.
-        filename (str): Имя файла, с которым сохранять.
-        folder (str): Папка, куда сохранять.
-
-    Returns:
-        str: Путь до файла, куда сохранён текст.
-    """
-    params = {
-        'id': filename.split('/')[0],
-    }
-    response = requests.get(url, params=params)
-    response.raise_for_status()
-    check_for_redirect(response)
-
-    name = f'{sanitize_filename(filename)}'
-    path = f'{os.getcwd()}/{folder}/{name}.txt'
-    with open(path, 'wb') as file:
-        file.write(response.content)
-
-    return f'{folder}/{name}.txt'
-
-
-def download_image(url, name, folder='images'):
-    """Функция для скачивания картинок"""
-
-    response = requests.get(url)
-    response.raise_for_status()
-    check_for_redirect(response)
-
-    path = f'{os.getcwd()}/{folder}/{name}'
-    with open(path, 'wb') as file:
-        file.write(response.content)
-
-    return f'{folder}/{name}'
-
-
-def parse_book_page(response):
-    """Функция для получения информации о книге"""
-
-    soup = BeautifulSoup(response.text, 'lxml')
-    title, author = soup.select_one('h1').text.split('::')
-
-    genres = soup.select('.d_book > a')
-    book_ganres = [genre.text for genre in genres]
-
-    comments = soup.select('.texts .black')
-    book_comments = [comment.text for comment in comments]
-
-    image = soup.select_one('.bookimage a img')['src']
-    image_url = urljoin(response.url, image)
-
-    return {
-        'title': title.strip(),
-        'author': author.strip(),
-        'ganres': book_ganres,
-        'comments': book_comments,
-        'image_url': image_url
-    }
 
 
 def main():

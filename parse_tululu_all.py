@@ -6,7 +6,6 @@ import logging
 from urllib.parse import urljoin, urlsplit
 
 import requests
-
 from pathvalidate import sanitize_filename
 from bs4 import BeautifulSoup
 

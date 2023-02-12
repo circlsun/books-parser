@@ -39,10 +39,10 @@ def main():
         '--end_page', type=int, default=5,
         help='Ending book')
     parser.add_argument(
-        '--skip_imgs',  action='store_false', default=True,
+        '--skip_imgs',  action='store_true',
         help='Argument for not to download the images')
     parser.add_argument(
-        '--skip_txt',  action='store_false', default=True,
+        '--skip_txt',  action='store_true',
         help='Argument for not to download the text')
     parser.add_argument(
         '--json_path', default='json',
@@ -58,6 +58,7 @@ def main():
     skip_text = args.skip_txt
     books_folder = args.dest_folder
     json_folder = args.json_path
+    print(skip_images, skip_text)
 
     os.makedirs(books_folder, exist_ok=True)
     os.makedirs(json_folder, exist_ok=True)
@@ -78,15 +79,15 @@ def main():
                 .path.split('/')[2]
             book_name = f"{book_id}. {book_description['title']}"
 
+            text_path = None
             if skip_text:
                 text_path = download_txt(text_url, book_name, books_folder)
-            else:
-                text_path = None
+
+            image_path = None
             if skip_images:
                 image_path = download_image(
                     book_description['image_url'], image_name, books_folder)
-            else:
-                image_path = None
+
             book_description = {
                     "title": book_description["title"],
                     "author": book_description["author"],

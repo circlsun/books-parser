@@ -34,7 +34,7 @@ def download_txt(url, filename, folder='books'):
     with open(path, 'wb') as file:
         file.write(response.content)
 
-    return path
+    return f'{folder}/{name}.txt'
 
 
 def download_image(url, name, folder='images'):
@@ -48,7 +48,7 @@ def download_image(url, name, folder='images'):
     with open(path, 'wb') as file:
         file.write(response.content)
 
-    return path
+    return f'{folder}/{name}'
 
 
 def check_for_redirect(response):

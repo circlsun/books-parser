@@ -113,10 +113,8 @@ def main():
         books_description.append(book_description)
         with open(
             f'{json_folder}/{"books_description.json"}', 'w', encoding='utf8'
-        ) as json_file:
-            json_file.write(
-                json.dumps(books_description, ensure_ascii=False, indent=2)
-            )
+        ) as jsnfile:
+            json.dump(books_description, jsnfile, ensure_ascii=False, indent=2)
 
 
 if __name__ == "__main__":

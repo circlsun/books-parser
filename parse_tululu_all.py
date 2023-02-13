@@ -83,8 +83,8 @@ def main():
     logger = logging.getLogger('ParserLog')
     logging.basicConfig(filename='app.log', filemode='w')
     logging.info('This will get logged to a file')
-
     logger.setLevel(level=logging.INFO)
+
     os.makedirs('books', exist_ok=True)
     os.makedirs('images', exist_ok=True)
 
@@ -120,11 +120,14 @@ def main():
                     Комменты: {book_description["comments"]}
                 '''))
         except requests.HTTPError as error:
-            print(f'HTTP request error: {error}. Use google.com to translate.')
-            logger.info(f'HTTP request error: {error}. \
-                Book {book_id} is not download!')
+            print(textwrap.dedent(f'''
+            The previous book is not available for download.
+            HTTP error: {error}. Use google.com to translate.
+            '''))
+            logger.info(f'HTTP error:{error}. Book {book_id} is not download!')
             continue
         except requests.ConnectionError:
+            logger.info('Connection error!')
             print('Connection error!')
             time.sleep(5)
             continue

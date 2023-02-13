@@ -1,14 +1,22 @@
 import os
-import time
 import json
 import textwrap
 import argparse
+import logging
 from urllib.parse import urljoin, urlsplit
 
 import requests
 from bs4 import BeautifulSoup
 from parse_tululu_all import check_for_redirect, download_txt
 from parse_tululu_all import download_image, parse_book_page
+
+
+def check_connection(timeout):
+    try:
+        requests.head("http://www.google.com/", timeout=timeout)
+        return True
+    except requests.ConnectionError:
+        return False
 
 
 def get_urls(start_id, end_id):
@@ -25,12 +33,17 @@ def get_urls(start_id, end_id):
 
         for book_scifi in books_scifi:
             links.append(urljoin(
-                response.url, book_scifi.select_one('a')['href']
-                ))
+                response.url, book_scifi.select_one('a')['href'])
+            )
     return links
 
 
 def main():
+    logger = logging.getLogger('ParserLog')
+    logging.basicConfig(filename='app.log', filemode='w')
+    logging.info('This will get logged to a file')
+    logger.setLevel(level=logging.INFO)
+
     parser = argparse.ArgumentParser(description='Save books from tululu.org')
     parser.add_argument(
         '--start_page', type=int, default=1,
@@ -58,7 +71,6 @@ def main():
     skip_text = args.skip_txt
     books_folder = args.dest_folder
     json_folder = args.json_path
-    print(skip_images, skip_text)
 
     os.makedirs(books_folder, exist_ok=True)
     os.makedirs(json_folder, exist_ok=True)
@@ -67,9 +79,9 @@ def main():
     book_urls = get_urls(start_id, end_id)
     books_description = []
     for title_url in book_urls:
-        print(f'Link of the book: {title_url}')
-        book_id = title_url.split('/')[3][1:]
         try:
+            print(f'Link of the book: {title_url}')
+            book_id = title_url.split('/')[3][1:]
             response = requests.get(title_url)
             response.raise_for_status()
             check_for_redirect(response)
@@ -104,11 +116,17 @@ def main():
             The previous book is not available for download.
             HTTP error: {error}. Use google.com to translate.
             '''))
+            logger.info(f'HTTP error:{error}. Book {book_id} is not download!')
             continue
         except requests.ConnectionError:
-            print('Connection error!')
-            time.sleep(5)
-            continue
+            logger.info("The internet connection is down!")
+            print("The internet connection is down!")
+            timeout = 5
+            while True:
+                if check_connection(timeout):
+                    break
+                else:
+                    continue
 
         books_description.append(book_description)
         with open(

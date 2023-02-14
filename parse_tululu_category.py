@@ -24,17 +24,21 @@ def get_urls(start_id, end_id):
 
     for page in range(start_id, end_id):
         scifi_url = f'https://tululu.org/l55/{page}'
-        response = requests.get(scifi_url)
-        response.raise_for_status()
-        check_for_redirect(response)
+        try:
+            response = requests.get(scifi_url)
+            response.raise_for_status()
+            check_for_redirect(response)
+        except requests.HTTPError as error:
+            print(f'HTTP Error: {error}')
+            continue
+        else:
+            soup = BeautifulSoup(response.text, 'lxml')
+            books_scifi = soup.select('.bookimage')
 
-        soup = BeautifulSoup(response.text, 'lxml')
-        books_scifi = soup.select('.bookimage')
-
-        for book_scifi in books_scifi:
-            links.append(urljoin(
-                response.url, book_scifi.select_one('a')['href'])
-            )
+            for book_scifi in books_scifi:
+                links.append(urljoin(
+                    response.url, book_scifi.select_one('a')['href'])
+                )
     return links
 
 
@@ -118,6 +122,7 @@ def main():
             '''))
             logger.info(f'HTTP error:{error}. Book {book_id} is not download!')
             continue
+        
         except requests.ConnectionError:
             logger.info("The internet connection is down!")
             print("The internet connection is down!")

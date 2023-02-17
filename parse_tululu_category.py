@@ -11,12 +11,6 @@ from parse_tululu_all import check_for_redirect, download_txt
 from parse_tululu_all import download_image, parse_book_page
 
 
-class ParserResponseError(Exception):
-    def __inint__(self, message):
-        super().__init__(message)
-        self.message = message
-
-
 def check_connection(timeout):
     try:
         requests.head("http://www.google.com/", timeout=timeout)

@@ -11,6 +11,12 @@ from parse_tululu_all import check_for_redirect, download_txt
 from parse_tululu_all import download_image, parse_book_page
 
 
+class ParserResponseError(Exception):
+    def __inint__(self, message):
+        super().__init__(message)
+        self.message = message
+
+
 def check_connection(timeout):
     try:
         requests.head("http://www.google.com/", timeout=timeout)
@@ -28,9 +34,20 @@ def get_urls(start_id, end_id):
             response = requests.get(scifi_url)
             response.raise_for_status()
             check_for_redirect(response)
+
         except requests.HTTPError as error:
             print(f'HTTP Error: {error}')
             continue
+
+        except requests.ConnectionError:
+            print("The internet connection is down!")
+            timeout = 5
+            while True:
+                if check_connection(timeout):
+                    break
+                else:
+                    continue
+
         else:
             soup = BeautifulSoup(response.text, 'lxml')
             books_scifi = soup.select('.bookimage')
@@ -122,7 +139,7 @@ def main():
             '''))
             logger.info(f'HTTP error:{error}. Book {book_id} is not download!')
             continue
-        
+
         except requests.ConnectionError:
             logger.info("The internet connection is down!")
             print("The internet connection is down!")
